@@ -15,17 +15,12 @@ public with sharing class LeadBO {
     List<Contact> lstContactsToUpdate = new List<Contact>();
     List<Account> lstAccountsToUpdateOrCreate = new List<Account>();
 
-    List<Account> accounts = [
-      SELECT Id, Name, Phone, CreatedById, OwnerId
-      FROM Account
-    ];
-    List<User> users = [SELECT Id, Name, Email, Phone FROM User];
+    List<Account> accounts = AccountDAO.getAccounts();
+    List<User> users = UserDAO.getUsers();
 
     Map<Id, User> mapUserByAccountId = new Map<Id, User>();
     Set<Account> setAccounts = new Set<Account>();
     Map<Id, Lead> mapLeadByCt = new Map<Id, Lead>();
-
-    System.debug('mapUserByAccountId' + mapUserByAccountId);
 
     for (Lead leadItem : lstLead) {
       if (
@@ -51,10 +46,7 @@ public with sharing class LeadBO {
         }
 
         if (lstAccountsToUpdateOrCreate.isEmpty()) {
-          Account newAccount = new Account(
-            Name = accountName,
-            OwnerId = UserInfo.getUserId()
-          );
+          Account newAccount = new Account(Name = accountName, OwnerId = UserInfo.getUserId());
           lstAccountsToUpdateOrCreate.add(newAccount);
           insert newAccount;
         }
