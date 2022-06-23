@@ -46,7 +46,10 @@ public with sharing class LeadBO {
         }
 
         if (lstAccountsToUpdateOrCreate.isEmpty()) {
-          Account newAccount = new Account(Name = accountName, OwnerId = UserInfo.getUserId());
+          Account newAccount = new Account(
+            Name = accountName,
+            OwnerId = UserInfo.getUserId()
+          );
           lstAccountsToUpdateOrCreate.add(newAccount);
           insert newAccount;
         }
@@ -71,36 +74,50 @@ public with sharing class LeadBO {
           for (User u : setUsers) {
             String firstName = u.Name.substringBefore(' ');
             String lastName = u.Name.substringAfter(' ');
-            Contact ct = new Contact(
-              FirstName = firstName,
-              LastName = lastName,
-              Email = u.Email,
-              Phone = u.Phone,
-              AccountId = accountId
-            );
-            lstContactsToUpdate.add(ct);
-            mapLeadByCt.put(ct.Id, leadItem);
+            Contact oldCt;
+            try {
+              oldCt = [SELECT Id FROM Contact WHERE Email = :u.Email LIMIT 1];
+            } catch (Exception e) {
+              if (e != null) {
+                Contact ct = new Contact(
+                  FirstName = firstName,
+                  LastName = lastName,
+                  Email = u.Email,
+                  Phone = u.Phone,
+                  AccountId = accountId
+                );
+                lstContactsToUpdate.add(ct);
+                mapLeadByCt.put(ct.Id, leadItem);
+              }
+            }
+
+            if (oldCt != null) {
+              oldCt.FirstName = firstName;
+              oldCt.LastName = lastName;
+              oldCt.Email = u.Email;
+              oldCt.Phone = u.Phone;
+              oldCt.AccountId = accountId;
+              lstContactsToUpdate.add(oldCt);
+            }
           }
         }
       }
     }
 
-    if (
-      !lstAccountsToUpdateOrCreate.isEmpty() && !lstContactsToUpdate.isEmpty()
-    ) {
+    if (!lstAccountsToUpdateOrCreate.isEmpty()) {
       upsert lstContactsToUpdate;
       update lstAccountsToUpdateOrCreate;
 
       for (Contact ct : lstContactsToUpdate) {
-          if(mapLeadByCt.containsKey(ct.Id)){
-              Lead l = mapLeadByCt.get(ct.Id);
-              l.Contact__c = ct.Id;
-              lstLeadsToUpdate.add(l);
-          }
+        if (mapLeadByCt.containsKey(ct.Id)) {
+          Lead l = mapLeadByCt.get(ct.Id);
+          l.Contact__c = ct.Id;
+          lstLeadsToUpdate.add(l);
+        }
       }
 
-      if(!lstLeadsToUpdate.isEmpty()){
-          update lstLeadsToUpdate;
+      if (!lstLeadsToUpdate.isEmpty()) {
+        update lstLeadsToUpdate;
       }
     }
   }
