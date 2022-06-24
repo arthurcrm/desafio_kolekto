@@ -40,7 +40,8 @@ public with sharing class LeadBO {
         }
 
         for (Account acc : setAccounts) {
-          if (acc.Name.equals(accountName)) {
+          if (acc.Name.contains(leadItem.CNPJ__c)) {
+            acc.Name = accountName;
             lstAccountsToUpdateOrCreate.add(acc);
           }
         }
@@ -87,7 +88,9 @@ public with sharing class LeadBO {
                   AccountId = accountId
                 );
                 lstContactsToUpdate.add(ct);
+                leadItem.Contact__c = ct.Id;
                 mapLeadByCt.put(ct.Id, leadItem);
+                System.debug('mapLEadbyCt' + mapLeadByCt);
               }
             }
 
@@ -102,19 +105,12 @@ public with sharing class LeadBO {
           }
         }
       }
+      lstLeadsToUpdate.add(leadItem);
     }
 
     if (!lstAccountsToUpdateOrCreate.isEmpty()) {
       upsert lstContactsToUpdate;
       update lstAccountsToUpdateOrCreate;
-
-      for (Contact ct : lstContactsToUpdate) {
-        if (mapLeadByCt.containsKey(ct.Id)) {
-          Lead l = mapLeadByCt.get(ct.Id);
-          l.Contact__c = ct.Id;
-          lstLeadsToUpdate.add(l);
-        }
-      }
 
       if (!lstLeadsToUpdate.isEmpty()) {
         update lstLeadsToUpdate;
