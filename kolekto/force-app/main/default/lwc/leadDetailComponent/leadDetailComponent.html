@@ -1,3 +1,37 @@
 <template>
-    
+  <lightning-record-edit-form
+    object-api-name="Lead"
+    record-id={recordId}
+    onload={load}
+  >
+    <div class="c-container">
+      <lightning-layout>
+        <lightning-layout-item padding="around-medium">
+          <div class="header-column">
+            <p class="field-title" title="Field 3">Account</p>
+            <div class="info">
+              <p>{accountName}</p>
+              <p>{accountId}</p>
+            </div>
+          </div>
+        </lightning-layout-item>
+        <lightning-layout-item padding="around-medium">
+          <div class="header-column">
+            <p class="field-title" title="Field 4">Contact</p>
+            <div
+              key={contact.Id}
+              for:each={contacts}
+              for:item="contact"
+              class="info"
+            >
+              <p>{contact.Id}</p>
+              <p>{contact.FirstName} {contact.LastName}</p>
+              <p>{contact.Phone}</p>
+              <p>{contact.AccountId}</p>
+            </div>
+          </div>
+        </lightning-layout-item>
+      </lightning-layout>
+    </div>
+  </lightning-record-edit-form>
 </template>

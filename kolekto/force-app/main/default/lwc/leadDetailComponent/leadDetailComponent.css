@@ -1,0 +1,23 @@
+.c-container {
+  margin: 10px 0 20px 0;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.header-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.slds-p-around_medium {
+  display: flex;
+  align-items: center;
+  border: var(--lwc-borderWidthThin, 1px) solid rgb(56, 56, 56);
+  border-radius: var(--lwc-borderRadiusMedium, 0.25rem);
+}

@@ -7,6 +7,30 @@ public with sharing class LeadBO {
     return instance;
   }
 
+  public LeadController.ResponseTO getSavedData(Id leadId) {
+    LeadController.ResponseTO to = new LeadController.ResponseTO();
+    try {
+      Lead l = LeadDAO.selectLeadById(leadId);
+      String accountName = l.Company + ' | ' + l.CNPJ__c;
+      Account acc = AccountDAO.getAccountByCNPJ(accountName);
+      if (l != null && acc != null) {
+        to.leadObj = l;
+        to.accObj = acc;
+        to.ctObj = acc.Contacts;
+        to.error = false;
+      }
+    } catch (DmlException e) {
+      to.error = true;
+      to.message = e.getDmlMessage(0);
+    } catch (Exception e) {
+      to.error = true;
+      to.message = e.getMessage();
+      to.errorStackTrace = e.getStackTraceString();
+    }
+
+    return to;
+  }
+
   public void createOrUpdateAccountByLeadStatusChange(
     List<Lead> lstLead,
     Map<Id, Lead> mapOldLead
