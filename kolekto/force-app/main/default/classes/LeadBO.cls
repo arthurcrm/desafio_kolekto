@@ -88,9 +88,6 @@ public with sharing class LeadBO {
                   AccountId = accountId
                 );
                 lstContactsToUpdate.add(ct);
-                leadItem.Contact__c = ct.Id;
-                mapLeadByCt.put(ct.Id, leadItem);
-                System.debug('mapLEadbyCt' + mapLeadByCt);
               }
             }
 
@@ -111,10 +108,6 @@ public with sharing class LeadBO {
     if (!lstAccountsToUpdateOrCreate.isEmpty()) {
       upsert lstContactsToUpdate;
       update lstAccountsToUpdateOrCreate;
-
-      if (!lstLeadsToUpdate.isEmpty()) {
-        update lstLeadsToUpdate;
-      }
     }
   }
 }
