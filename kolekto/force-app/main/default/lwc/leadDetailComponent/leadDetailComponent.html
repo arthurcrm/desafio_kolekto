@@ -10,8 +10,11 @@
           <div class="header-column">
             <p class="field-title" title="Field 3">Account</p>
             <div class="info">
-              <p>{accountName}</p>
+              <span>Account</span>
+              <b>Id</b>
               <p>{accountId}</p>
+              <b>Name</b>
+              <p>{accountName}</p>
             </div>
           </div>
         </lightning-layout-item>
@@ -24,9 +27,14 @@
               for:item="contact"
               class="info"
             >
+              <span>Contact</span>
+              <b>Id</b>
               <p>{contact.Id}</p>
+              <b>Name</b>
               <p>{contact.FirstName} {contact.LastName}</p>
+              <b>Phone</b>
               <p>{contact.Phone}</p>
+              <b>AccountId</b>
               <p>{contact.AccountId}</p>
             </div>
           </div>

@@ -103,16 +103,15 @@ public with sharing class LeadBO {
             try {
               oldCt = [SELECT Id FROM Contact WHERE Email = :u.Email LIMIT 1];
             } catch (Exception e) {
-              if (e != null) {
-                Contact ct = new Contact(
-                  FirstName = firstName,
-                  LastName = lastName,
-                  Email = u.Email,
-                  Phone = u.Phone,
-                  AccountId = accountId
-                );
-                lstContactsToUpdate.add(ct);
-              }
+              Contact ct = new Contact(
+                FirstName = firstName,
+                LastName = lastName,
+                Email = u.Email,
+                Phone = u.Phone,
+                AccountId = accountId
+              );
+
+              lstContactsToUpdate.add(ct);
             }
 
             if (oldCt != null) {
@@ -126,7 +125,6 @@ public with sharing class LeadBO {
           }
         }
       }
-      lstLeadsToUpdate.add(leadItem);
     }
 
     if (!lstAccountsToUpdateOrCreate.isEmpty()) {
